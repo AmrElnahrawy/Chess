@@ -1,8 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../include/Utilities.h"
 #include "../include/GameState.h"
 #include "../include/Menus.h"
+
+void startNormalGame() {
+    gameState *theGame = (gameState*)malloc(sizeof(gameState));
+    constructNormalBoard(theGame);
+    while(1) {
+        system("clear");
+        printf("TO Exit press ( x )\n");
+        printf("TO Save press ( s )\n");
+        printf("-------------------------------------------------------\n");
+        displayBoard(theGame);
+        printf("-------------------------------------------------------\n");
+        if (theGame->movesNumber % 2 == 0) {
+            printf("White to move: ");
+        } else {
+            printf("Black to move: ");
+        }
+        char *move = pieceMoveInput();
+        if (move)
+            printf("%s\n", move);
+        else
+            printf("Invalid move\n");    
+        getchar();
+        free(move);
+    }
+    free(theGame);
+}
 
 int displayModeMenu()
 {
@@ -15,20 +42,11 @@ int displayModeMenu()
         printf("2) Fischer Random\n");
         printf("3) return\n");
         printf("Enter Option number: ");
-        if (fgets(input, sizeof(input), stdin))
-        {
-            if (input[1] != '\n' || input[2] != '\0')
-                continue;
-            sscanf(input, "%d", &choice);
-        }
+        choice = singleDigitInput();
     } while (choice < 1 || 3 < choice);
     if (choice == 1)
     {
-        gameState theGame;
-        constructNormalBoard(&theGame);
-        system("clear");
-        displayBoard(&theGame);
-        getchar();
+        startNormalGame();
     }
     else if (choice == 2)
     {
@@ -54,12 +72,7 @@ void displayMainMenu()
             printf("2) Load Game\n");
             printf("3) Exit\n");
             printf("Enter Option number: ");
-            if (fgets(input, sizeof(input), stdin))
-            {
-                if (input[1] != '\n' || input[2] != '\0')
-                    continue;
-                sscanf(input, "%d", &choice);
-            }
+            choice = singleDigitInput();
         } while (choice < 1 || 3 < choice);
 
         if (choice == 1)

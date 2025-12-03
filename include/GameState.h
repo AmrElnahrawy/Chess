@@ -18,6 +18,4 @@ void constructNormalBoard(gameState *theGame);
 
 void displayBoard(gameState *theGame);
 
-void resumeGame(gameState *theGame);
-
 #endif
