@@ -8,8 +8,6 @@
 typedef struct
 {
     piece ***board;
-    piece *allWhite[16];
-    piece *allBlack[16];
     char moves[200][7];
     int movesNumber;
 } gameState;
@@ -17,5 +15,7 @@ typedef struct
 void constructNormalBoard(gameState *theGame);
 
 void displayBoard(gameState *theGame);
+
+void allKingMoves(piece *apiece, gameState *theGame);
 
 #endif

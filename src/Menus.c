@@ -12,6 +12,7 @@ void startNormalGame() {
         system("clear");
         printf("TO Exit press ( x )\n");
         printf("TO Save press ( s )\n");
+        printf("TO Undo press ( u )\n");
         printf("-------------------------------------------------------\n");
         displayBoard(theGame);
         printf("-------------------------------------------------------\n");

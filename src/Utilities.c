@@ -19,6 +19,11 @@ int singleDigitInput() {
 char *pieceMoveInput() {
     char input[100];
     char *move = (char*)malloc(6);
+    if (move == NULL) {
+        printf("ERROR: Not enough memory\n");
+        getchar();
+        return NULL;
+    }
     if (fgets(input, 100, stdin) == NULL) {
         free(move);
         return NULL;
@@ -30,6 +35,10 @@ char *pieceMoveInput() {
         return move;
     } else if (input[0] == 's' && input[1] == '\n' && input[2] == '\0') {
         move[0] = 's';
+        move[1] = '\0';
+        return move;
+    } else if (input[0] == 'u' && input[1] == '\n' && input[2] == '\0') {
+        move[0] = 'u';
         move[1] = '\0';
         return move;
     }
