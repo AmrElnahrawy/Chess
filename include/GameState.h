@@ -20,4 +20,12 @@ void displayBoard(gameState *theGame);
 
 void allKingMoves(piece *apiece, gameState *theGame);
 
+void allBishopMoves(piece *aPiece, gameState *theGame);
+
+void allQueenMoves(piece *aPiece, gameState *theGame);
+
+void allKnightMoves(piece *aPiece, gameState *theGame);
+
+void allPawnMoves(piece *aPiece, gameState *theGame);
+
 #endif

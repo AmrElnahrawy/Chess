@@ -37,15 +37,19 @@ void constructNormalBoard(gameState *theGame)
             {
                 theGame->board[i][j] = (piece *)malloc(sizeof(piece));
                 if (i == 1) {
+                    theGame->allBlack[j + 7] = theGame->board[i][j];
                     theGame->board[i][j]->type = 'P';
                 }
                 else if (i == 6) {
+                    theGame->allWhite[j + 7] = theGame->board[i][j];
                     theGame->board[i][j]->type = 'p';
                 }
                 else if (i == 0) {
+                    theGame->allBlack[j] = theGame->board[i][j];
                     theGame->board[i][j]->type = blackPieces[j];
                 }
                 else if (i == 7) {
+                    theGame->allWhite[j] = theGame->board[i][j];
                     theGame->board[i][j]->type = whitePieces[j];
                 }
             }
@@ -69,30 +73,30 @@ void freeBoard(gameState *theGame)
 void displayBoard(gameState *theGame)
 {
     printf("      A     B     C     D     E     F     G     H   \n");
-    printf("   ╔═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╗\n");
+    printf("   +-----+-----+-----+-----+-----+-----+-----+-----+\n");
     for (int i = 0; i < 8; i++)
     {
-        printf(" %d ║", i + 1);
+        printf(" %d |", 8 - i);
         for (int j = 0; j < 8; j++)
         {
             if (theGame->board[i][j] && theGame->board[i][j])
             {
-                printf("  %c  ║", theGame->board[i][j]->type);
+                printf("  %c  |", theGame->board[i][j]->type);
             }
             else if ((i + j) % 2 == 0)
             {
-                printf("  -  ║");
+                printf("  -  |");
             }
             else
             {
-                printf("  ·  ║");
+                printf("  ·  |");
             }
         }
-        printf(" %d\n", i + 1);
+        printf(" %d\n", 8 - i);
         if (i != 7)
-            printf("   ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣\n");
+            printf("   +-----+-----+-----+-----+-----+-----+-----+-----+\n");
     }
-    printf("   ╚═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╝\n");
+    printf("   +-----+-----+-----+-----+-----+-----+-----+-----+\n");
     printf("      A     B     C     D     E     F     G     H   \n");
 }
 
@@ -146,12 +150,8 @@ void allRookMoves(piece *aPiece, gameState *theGame) {
             }
         }
     }
-//theGame->movesNumber = movesCounter;
     return;
 }
-/// 
-
-
 
 void allBishopMoves(piece *aPiece, gameState *theGame) {
     int movesCounter = 0;
@@ -179,9 +179,9 @@ void allBishopMoves(piece *aPiece, gameState *theGame) {
             }
         }
     }
-//theGame->movesNumber = movesCounter;
     return;
 }
+
 void allQueenMoves(piece *aPiece, gameState *theGame) {
     int movesCounter = 0;
     int currentPosition[2] = {aPiece->position[0] , aPiece->position[1]};
@@ -208,7 +208,6 @@ void allQueenMoves(piece *aPiece, gameState *theGame) {
             }
         }
     }
-//theGame->movesNumber = movesCounter;
     return;
 }
 
@@ -229,7 +228,6 @@ void allKnightMoves(piece *aPiece, gameState *theGame) {
 
         }
     }
-//theGame->movesNumber = movesCounter;
     return;
 }
 
@@ -241,66 +239,27 @@ void allPawnMoves(piece *aPiece, gameState *theGame) {
     for (int d = 0; d < 3; d++) {
         int ni=currentPosition[0] + di[d];
         int nj=currentPosition[1] + dj[d];
-            if (0 < ni && ni < 8 && 0 < nj && nj < 8) {
-                if (!theGame->board[ni][nj]&&(di[d]==1&&dj[d]==0)) {
-                    theGame->moves[movesCounter][0] = ni;
-                    theGame->moves[movesCounter][1] = nj;
-                    movesCounter++;
-                }
-                else if (theGame->board[ni][nj]->color != aPiece->color&&(di[d]!=1&&dj[d]!=0)) {
-                    theGame->moves[movesCounter][0] = ni;
-                    theGame->moves[movesCounter][1] = nj;
-                    movesCounter++;
-                }
-            }
-        
-    }
-    return;
-}
-void allPawnMoves(piece *aPiece, gameState *theGame) {
-    int movesCounter = 0;
-    int i0 = aPiece->position[0];
-    int j0 = aPiece->position[1];
-    int dir;
-    if (aPiece->color == WHITE) {
-    dir = -1;
-    } else {
-    dir = 1;
-    }    
-    int ni = i0 + dir;
-    int nj = j0;
-    if (0 <= ni && ni < 8 && !theGame->board[ni][nj]) {
-        theGame->moves[movesCounter][0] = ni;
-        theGame->moves[movesCounter][1] = nj;
-        movesCounter++;
-        int firstRow;
-        if (aPiece->color == WHITE) {
-        firstRow = 6;
-        } else {
-        firstRow = 1;
-        }
-        if (i0 == firstRow) {
-            int ni2 = i0 + 2*dir;
-            if (theGame->board[ni2][nj] == NULL) {
-                theGame->moves[movesCounter][0] = ni2;
+        if (0 < ni && ni < 8 && 0 < nj && nj < 8) {
+            // double move check?
+            if (!theGame->board[ni][nj]&&(di[d]==1&&dj[d]==0)) {
+                theGame->moves[movesCounter][0] = ni;
                 theGame->moves[movesCounter][1] = nj;
                 movesCounter++;
             }
-        }
-    }
-    for (int dj = -1; dj <= 1; dj += 2) {
-        ni = i0 + dir;
-        nj = j0 + dj;
-        if (0 <= ni && ni < 8 && 0 <= nj && nj < 8) {
-            piece *target = theGame->board[ni][nj];
-            if (theGame->board[ni][nj] && target->color != aPiece->color) {
+            else if (theGame->board[ni][nj]->color != aPiece->color&&(di[d]!=1&&dj[d]!=0)) {
                 theGame->moves[movesCounter][0] = ni;
                 theGame->moves[movesCounter][1] = nj;
                 movesCounter++;
             }
         }
+        
     }
-//    theGame->movesNumber = movesCounter;
+    return;
 }
 
+void allPiecesMoves(gameState *theGame, piece *allWhite[16], piece *allBlack[16]) {
+    // use all the other function here
+    // the goal is to run all of them to check all the pieces
+    return;
+}
 
