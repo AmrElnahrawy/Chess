@@ -7,7 +7,7 @@
 void constructPieceView(piece *aPiece) {
     int rows = 0;
     if (aPiece->type == 'p' || aPiece->type == 'P') {
-        rows = 3;
+        rows = 4;
     }
     else if (aPiece->type == 'r' || aPiece->type == 'R') {
         rows = 14;

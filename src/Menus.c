@@ -13,9 +13,9 @@ void startNormalGame() {
         printf("TO Exit press ( x )\n");
         printf("TO Save press ( s )\n");
         printf("TO Undo press ( u )\n");
-        printf("-------------------------------------------------------\n");
+        printf("=======================================================\n");
         displayBoard(theGame);
-        printf("-------------------------------------------------------\n");
+        printf("=======================================================\n");
         if (theGame->movesNumber % 2 == 0) {
             printf("White to move: ");
         } else {

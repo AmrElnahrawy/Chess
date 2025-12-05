@@ -36,21 +36,36 @@ void constructNormalBoard(gameState *theGame)
             else
             {
                 theGame->board[i][j] = (piece *)malloc(sizeof(piece));
+                theGame->board[i][j]->hasMoved = 0;
+                theGame->board[i][j]->enPassant = 0;
+                theGame->board[i][j]->captured = 0;
                 if (i == 1) {
                     theGame->allBlack[j + 7] = theGame->board[i][j];
                     theGame->board[i][j]->type = 'P';
+                    theGame->board[i][j]->color = 1;
+                    theGame->board[i][j]->position[0] = i;
+                    theGame->board[i][j]->position[1] = j;
                 }
                 else if (i == 6) {
                     theGame->allWhite[j + 7] = theGame->board[i][j];
                     theGame->board[i][j]->type = 'p';
+                    theGame->board[i][j]->color = 0;
+                    theGame->board[i][j]->position[0] = i;
+                    theGame->board[i][j]->position[1] = j;
                 }
                 else if (i == 0) {
                     theGame->allBlack[j] = theGame->board[i][j];
                     theGame->board[i][j]->type = blackPieces[j];
+                    theGame->board[i][j]->color = 1;
+                    theGame->board[i][j]->position[0] = i;
+                    theGame->board[i][j]->position[1] = j;
                 }
                 else if (i == 7) {
                     theGame->allWhite[j] = theGame->board[i][j];
                     theGame->board[i][j]->type = whitePieces[j];
+                    theGame->board[i][j]->color = 0;
+                    theGame->board[i][j]->position[0] = i;
+                    theGame->board[i][j]->position[1] = j;
                 }
             }
         }
@@ -73,30 +88,30 @@ void freeBoard(gameState *theGame)
 void displayBoard(gameState *theGame)
 {
     printf("      A     B     C     D     E     F     G     H   \n");
-    printf("   ╔═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╗\n");
+    printf("   +-----+-----+-----+-----+-----+-----+-----+-----+\n");
     for (int i = 0; i < 8; i++)
     {
-        printf(" %d ║",8 - i);
+        printf(" %d |",8 - i);
         for (int j = 0; j < 8; j++)
         {
             if (theGame->board[i][j] && theGame->board[i][j])
             {
-                printf("  %c  ║", theGame->board[i][j]->type);
+                printf("  %c  |", theGame->board[i][j]->type);
             }
             else if ((i + j) % 2 == 0)
             {
-                printf("  -  ║");
+                printf("  -  |");
             }
             else
             {
-                printf("  ·  ║");
+                printf("  ·  |");
             }
         }
         printf(" %d\n",8 - i);
         if (i != 7)
-            printf("   ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣\n");
+            printf("   +-----+-----+-----+-----+-----+-----+-----+-----+\n");
     }
-    printf("   ╚═════╩═════╩═════╩═════╩═════╩═════╩═════╩═════╝\n");
+    printf("   +-----+-----+-----+-----+-----+-----+-----+-----+\n");
     printf("      A     B     C     D     E     F     G     H   \n");
 }
 
