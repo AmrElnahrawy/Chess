@@ -22,7 +22,7 @@ void constructPieceView(piece *aPiece) {
         rows = 27;
     }
     else if (aPiece->type == 'k' || aPiece->type == 'K') {
-        rows = 9;
+        rows = 8;
     }
 
     aPiece->pieceView = (int**)malloc(rows * sizeof(int*));

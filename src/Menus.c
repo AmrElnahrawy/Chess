@@ -35,7 +35,6 @@ void startNormalGame() {
 int displayModeMenu()
 {
     int choice = 0;
-    char input[100];
     do
     {
         system("clear"); // clear console
@@ -65,7 +64,6 @@ void displayMainMenu()
     while(1)
     {
         int choice = 0;
-        char input[100];
         do
         {
             system("clear"); // clear console

@@ -8,6 +8,8 @@
 typedef struct
 {
     piece ***board;
+    piece *allWhite[16];
+    piece *allBlack[16];
     char moves[200][7];
     int movesNumber;
 } gameState;

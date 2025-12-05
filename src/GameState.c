@@ -37,15 +37,19 @@ void constructNormalBoard(gameState *theGame)
             {
                 theGame->board[i][j] = (piece *)malloc(sizeof(piece));
                 if (i == 1) {
+                    theGame->allBlack[j + 7] = theGame->board[i][j];
                     theGame->board[i][j]->type = 'P';
                 }
                 else if (i == 6) {
+                    theGame->allWhite[j + 7] = theGame->board[i][j];
                     theGame->board[i][j]->type = 'p';
                 }
                 else if (i == 0) {
+                    theGame->allBlack[j] = theGame->board[i][j];
                     theGame->board[i][j]->type = blackPieces[j];
                 }
                 else if (i == 7) {
+                    theGame->allWhite[j] = theGame->board[i][j];
                     theGame->board[i][j]->type = whitePieces[j];
                 }
             }
@@ -72,7 +76,7 @@ void displayBoard(gameState *theGame)
     printf("   ╔═════╦═════╦═════╦═════╦═════╦═════╦═════╦═════╗\n");
     for (int i = 0; i < 8; i++)
     {
-        printf(" %d ║", i + 1);
+        printf(" %d ║",8 - i);
         for (int j = 0; j < 8; j++)
         {
             if (theGame->board[i][j] && theGame->board[i][j])
@@ -88,7 +92,7 @@ void displayBoard(gameState *theGame)
                 printf("  ·  ║");
             }
         }
-        printf(" %d\n", i + 1);
+        printf(" %d\n",8 - i);
         if (i != 7)
             printf("   ╠═════╬═════╬═════╬═════╬═════╬═════╬═════╬═════╣\n");
     }
@@ -106,14 +110,14 @@ void allKingMoves(piece *aPiece, gameState *theGame) {
         if (0 < currentPosition[0] + di[d] && currentPosition[0] + di[d] < 9) {
             if (0 < currentPosition[1] + dj[d] && currentPosition[1] + dj[d] < 9) {
                 if (!theGame->board[currentPosition[0] + di[d]][currentPosition[1] + dj[d]]) {
-                    theGame->moves[movesCounter][0] = currentPosition[0] + di[d];
-                    theGame->moves[movesCounter][1] = currentPosition[1] + dj[d];
+                    aPiece->pieceView[movesCounter][0] = currentPosition[0] + di[d];
+                    aPiece->pieceView[movesCounter][1] = currentPosition[1] + dj[d];
                     movesCounter++;
                     continue;
                 }
                 if (theGame->board[currentPosition[0] + di[d]][currentPosition[1] + dj[d]]->color != aPiece->color) {
-                    theGame->moves[movesCounter][0] = currentPosition[0] + di[d];
-                    theGame->moves[movesCounter][1] = currentPosition[1] + dj[d];
+                    aPiece->pieceView[movesCounter][0] = currentPosition[0] + di[d];
+                    aPiece->pieceView[movesCounter][1] = currentPosition[1] + dj[d];
                     movesCounter++;
                     continue;
                 }
