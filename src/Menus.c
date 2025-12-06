@@ -6,10 +6,21 @@
 #include "../include/Menus.h"
 
 void startNormalGame() {
+    int movesFlag = 1;
     gameState *theGame = (gameState*)malloc(sizeof(gameState));
+    if (theGame == NULL) {
+        printf("ERROR: Not enough memory\n");
+        getchar();
+        exit(0);
+    }
     constructNormalBoard(theGame);
     while(1) {
         system("clear");
+        if (movesFlag) {
+            allPiecesMoves(theGame, theGame->allWhite, theGame->allBlack);
+            movesFlag = 0;
+        }
+        /////////////////////////////////////////////////////////////////////////////////////
         printf("TO Exit press ( x )\n");
         printf("TO Save press ( s )\n");
         printf("TO Undo press ( u )\n");
@@ -22,10 +33,14 @@ void startNormalGame() {
             printf("Black to move: ");
         }
         char *move = pieceMoveInput();
-        if (move)
+        /////////////////////////////////////////////////////////////////////////////////////
+        if (move) {
             printf("%s\n", move);
+            viewAllPiecesMoves(theGame->allWhite, theGame->allBlack);
+        }
         else
-            printf("Invalid move\n");    
+            printf("Invalid move\n"); 
+        movesFlag = 1;   
         getchar();
         free(move);
     }

@@ -12,6 +12,7 @@ typedef struct
     int enPassant;
     int captured;
     int **pieceView;
+    int pieceViewSize;
 } piece;
 
 void constructPieceView(piece *aPiece);

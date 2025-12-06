@@ -28,4 +28,12 @@ void allKnightMoves(piece *aPiece, gameState *theGame);
 
 void allPawnMoves(piece *aPiece, gameState *theGame);
 
+void allPiecesMoves(gameState *theGame, piece **allWhite, piece **allBlack);
+
+
+
+/////////////// test functions "will be deleted" ///////////////
+
+void viewAllPiecesMoves(piece **allWhite, piece **allBlack);
+
 #endif

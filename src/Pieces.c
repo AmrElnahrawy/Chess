@@ -44,5 +44,6 @@ void constructPieceView(piece *aPiece) {
             exit(0);
         }
     }
+    aPiece->pieceViewSize = rows;
 }
 
