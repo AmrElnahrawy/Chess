@@ -108,7 +108,7 @@ void allKingMoves(piece *aPiece, gameState *theGame) {
     for (int d = 0; d < 8; d++) {
         int ni=currentPosition[0] + di[d];
         int nj=currentPosition[1] + dj[d];
-            if (0 < ni && ni < 8 && 0 < nj && nj < 8) {
+            if (0 <= ni && ni < 8 && 0 <= nj && nj < 8) {
                 if (!theGame->board[ni][nj]) {
                     theGame->moves[movesCounter][0] = ni;
                     theGame->moves[movesCounter][1] = nj;
@@ -260,6 +260,42 @@ void allPawnMoves(piece *aPiece, gameState *theGame) {
 void allPiecesMoves(gameState *theGame, piece *allWhite[16], piece *allBlack[16]) {
     // use all the other function here
     // the goal is to run all of them to check all the pieces
+    for(int i=0;i<16;i++){
+        piece *aPiece = allWhite[i];
+        if (aPiece == NULL) continue;
+        switch(aPiece->type){
+        case'k': 
+            allKingMoves( aPiece, theGame);break;
+        case'r': 
+            allRookMoves( aPiece, theGame);break;
+        case'b':
+            allBishopMoves(aPiece, theGame);break;
+        case'q':
+            allQueenMoves(aPiece, theGame);break;
+        case'n':
+            allKnightMoves(aPiece, theGame);break;
+        case'p':
+            allPawnMoves(aPiece, theGame);break;        
+        }
+    }
+    for(int i=0;i<16;i++){
+        piece *aPiece = allBlack[i];
+        if (aPiece == NULL) continue;
+        switch(aPiece->type){
+        case'K': 
+            allKingMoves( aPiece, theGame);break;
+        case'R': 
+            allRookMoves( aPiece, theGame);break;
+        case'B':
+            allBishopMoves(aPiece, theGame);break;
+        case'Q':
+            allQueenMoves(aPiece, theGame);break;
+        case'N':
+            allKnightMoves(aPiece, theGame);break;
+        case'P':
+            allPawnMoves(aPiece, theGame);break;        
+        }
+    }
     return;
 }
 
