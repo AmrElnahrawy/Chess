@@ -258,6 +258,7 @@ void allPawnMoves(piece *aPiece, gameState *theGame) {
 }
 
 void allPiecesMoves(gameState *theGame, piece *allWhite[16], piece *allBlack[16]) {
+    //new push
     // use all the other function here
     // the goal is to run all of them to check all the pieces
     for(int i=0;i<16;i++){
