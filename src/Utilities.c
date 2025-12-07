@@ -94,3 +94,19 @@ char *pieceMoveInput() {
 
     return move;
 }
+
+void moveStoI(char *move, int *moves) {
+    moves[4] = 0;
+    int i = 0;
+    while (move[i] != '\0') {
+        if (i == 4) {
+            moves[i] = (int) move[i];
+        } else if ('A' <= move[i] && move[i] <= 'H') {     
+            moves[i] = (int) move[i] - (int) 'A';
+        } else if ('1' <= move[i] && move[i] <= '8') {
+            moves[i] = (int) '8' - (int) move[i]; 
+        }
+        i++;
+    }
+    return;
+}

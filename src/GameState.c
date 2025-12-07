@@ -40,31 +40,37 @@ void constructNormalBoard(gameState *theGame)
                     exit(0);
                 }
                 theGame->board[i][j]->captured = 0;
+                theGame->board[i][j]->capturedWhen = -1;
                 theGame->board[i][j]->position[0] = i;
                 theGame->board[i][j]->position[1] = j;
                 theGame->board[i][j]->hasMoved = 0;
+                theGame->board[i][j]->pinned = 0;
                 if (i == 1) {
                     theGame->allBlack[8 + j] = theGame->board[i][j];
                     theGame->board[i][j]->type = 'P';
                     theGame->board[i][j]->color = 1;
+                    theGame->board[i][j]->id = 8 + j;
                     constructPieceView(theGame->board[i][j]);
                 }
                 else if (i == 6) {
                     theGame->allWhite[8 + j] = theGame->board[i][j];
                     theGame->board[i][j]->type = 'p';
                     theGame->board[i][j]->color = 0;
+                    theGame->board[i][j]->id = 8 + j;
                     constructPieceView(theGame->board[i][j]);
                 }
                 else if (i == 0) {
                     theGame->allBlack[j] = theGame->board[i][j];
                     theGame->board[i][j]->type = blackPieces[j];
                     theGame->board[i][j]->color = 1;
+                    theGame->board[i][j]->id = j;
                     constructPieceView(theGame->board[i][j]);
                 }
                 else if (i == 7) {
                     theGame->allWhite[j] = theGame->board[i][j];
                     theGame->board[i][j]->type = whitePieces[j];
                     theGame->board[i][j]->color = 0;
+                    theGame->board[i][j]->id = j;
                     constructPieceView(theGame->board[i][j]);
                 }
             }
@@ -88,7 +94,7 @@ void freeBoard(gameState *theGame)
 void displayBoard(gameState *theGame)
 {
     printf("      A     B     C     D     E     F     G     H   \n");
-    printf("   +-----+-----+-----+-----+-----+-----+-----+-----+\n");
+    printf("   +—————+—————+—————+—————+—————+—————+—————+—————+\n");
     for (int i = 0; i < 8; i++)
     {
         printf(" %d |", 8 - i);
@@ -109,9 +115,9 @@ void displayBoard(gameState *theGame)
         }
         printf(" %d\n", 8 - i);
         if (i != 7)
-            printf("   +-----+-----+-----+-----+-----+-----+-----+-----+\n");
-    }
-    printf("   +-----+-----+-----+-----+-----+-----+-----+-----+\n");
+            printf("   +—————+—————+—————+—————+—————+—————+—————+—————+\n");
+    }                   
+    printf("   +—————+—————+—————+—————+—————+—————+—————+—————+\n");
     printf("      A     B     C     D     E     F     G     H   \n");
 }
 
@@ -275,7 +281,7 @@ void allPawnMoves(piece *aPiece, gameState *theGame) {
 void allPiecesMoves(gameState *theGame, piece **allWhite, piece **allBlack) {
     for(int i=0;i<16;i++){
         piece *aPiece = allWhite[i];
-        if (aPiece == NULL) continue;
+        if (aPiece == NULL || aPiece->captured) continue;
         switch(aPiece->type){
         case'k': 
             allKingMoves(aPiece, theGame);break;
@@ -293,7 +299,7 @@ void allPiecesMoves(gameState *theGame, piece **allWhite, piece **allBlack) {
     }
     for(int i=0;i<16;i++){
         piece *aPiece = allBlack[i];
-        if (aPiece == NULL) continue;
+        if (aPiece == NULL  || aPiece->captured) continue;
         switch(aPiece->type){
         case'K': 
             allKingMoves(aPiece, theGame);break;
@@ -310,6 +316,31 @@ void allPiecesMoves(gameState *theGame, piece **allWhite, piece **allBlack) {
         }
     }
     return;
+}
+
+int checkMoveValidity2(int *move, gameState *theGame) {
+    // this function doesn't check pinned pieces
+    int isBlack = 1;
+    if (theGame->movesNumber % 2 == 0) // 0 index
+        isBlack = 0;
+    if (!theGame->board[move[1]][move[0]]) {
+        return 0;
+    }    
+    if (theGame->board[move[1]][move[0]]->color != isBlack) {
+        return 0;
+    }
+    if (move[3] == 0 || move[3] == 7) {
+        if (theGame->board[move[1]][move[0]]->type == 'P' || theGame->board[move[1]][move[0]]->type == 'p') {
+            if (move[4] == 0)
+                return 0;
+        }
+    }
+    for (int i = 0; i < theGame->board[move[1]][move[0]]->pieceViewSize; i++) {
+        if (theGame->board[move[1]][move[0]]->pieceView[i][0] == move[3] &&
+            theGame->board[move[1]][move[0]]->pieceView[i][1] == move[2])
+            return 1;
+    }
+    return 0;
 }
 
 

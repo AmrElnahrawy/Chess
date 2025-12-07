@@ -7,4 +7,6 @@ int singleDigitInput();
 
 char *pieceMoveInput();
 
+void moveStoI(char *move, int *moves);
+
 #endif

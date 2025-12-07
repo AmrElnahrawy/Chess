@@ -6,7 +6,6 @@
 #include "../include/Menus.h"
 
 void startNormalGame() {
-    int movesFlag = 1;
     gameState *theGame = (gameState*)malloc(sizeof(gameState));
     if (theGame == NULL) {
         printf("ERROR: Not enough memory\n");
@@ -15,12 +14,7 @@ void startNormalGame() {
     }
     constructNormalBoard(theGame);
     while(1) {
-        system("clear");
-        if (movesFlag) {
-            allPiecesMoves(theGame, theGame->allWhite, theGame->allBlack);
-            movesFlag = 0;
-        }
-        /////////////////////////////////////////////////////////////////////////////////////
+        system("clear"); 
         printf("TO Exit press ( x )\n");
         printf("TO Save press ( s )\n");
         printf("TO Undo press ( u )\n");
@@ -34,14 +28,46 @@ void startNormalGame() {
         }
         char *move = pieceMoveInput();
         /////////////////////////////////////////////////////////////////////////////////////
-        if (move) {
-            printf("%s\n", move);
-            viewAllPiecesMoves(theGame->allWhite, theGame->allBlack);
+        if (!move) {
+            printf("Invalid move1\n"); 
+            continue;
+        } else if (move[0] == 'x') {
+            // memory leak still exist
+            freeBoard(theGame);
+            return;
+        } else if (move[0] == 's') {
+            
+        } else if (move[0] == 'u') {
+            
         }
-        else
-            printf("Invalid move\n"); 
-        movesFlag = 1;   
+        allPiecesMoves(theGame, theGame->allWhite, theGame->allBlack);
+        moveStoI(move , theGame->moves[theGame->movesNumber]);
+        if (checkMoveValidity2(theGame->moves[theGame->movesNumber], theGame)) {
+            // captured pieces memory leak
+            printf("Valid move\n");
+            int fromRow = theGame->moves[theGame->movesNumber][1];
+            int fromCol = theGame->moves[theGame->movesNumber][0];
+            int toRow = theGame->moves[theGame->movesNumber][3];
+            int toCol = theGame->moves[theGame->movesNumber][2];
+            theGame->board[toRow][toCol] = theGame->board[fromRow][fromCol];
+            theGame->board[toRow][toCol]->hasMoved = 1;
+            theGame->board[toRow][toCol]->position[0] = toRow ;
+            theGame->board[toRow][toCol]->position[1] = toCol;
+            if (theGame->movesNumber % 2 == 0) {
+                theGame->allWhite[theGame->board[toRow][toCol]->id] = theGame->board[toRow][toCol];                
+            } else {
+                theGame->allBlack[theGame->board[toRow][toCol]->id] = theGame->board[toRow][toCol];
+            }
+            theGame->board[theGame->moves[theGame->movesNumber][1]][theGame->moves[theGame->movesNumber][0]] = NULL;
+            theGame->movesNumber++;
+        }
+        else 
+            printf("Invalid move2\n");
         getchar();
+        /////////////////////////////////////////////////////////
+        viewAllPiecesMoves(theGame->allWhite, theGame->allBlack);
+        getchar();
+        /////////////////////////////////////////////////////////
         free(move);
     }
     free(theGame);
@@ -62,6 +88,7 @@ int displayModeMenu()
     if (choice == 1)
     {
         startNormalGame();
+        return 0;
     }
     else if (choice == 2)
     {
@@ -91,7 +118,7 @@ void displayMainMenu()
 
         if (choice == 1)
         {
-            if (displayModeMenu() == 0);
+            if (displayModeMenu() == 0)
                 continue;
         }
         else if (choice == 2)
