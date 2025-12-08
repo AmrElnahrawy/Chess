@@ -252,7 +252,7 @@ void allKnightMoves(piece *aPiece, gameState *theGame) {
     return;
 }
 
-void allPawnMoves(piece *aPiece, gameState *theGame) {
+/*void allPawnMoves(piece *aPiece, gameState *theGame) {
     int movesCounter = 0;
     int currentPosition[2] = {aPiece->position[0] , aPiece->position[1]};
     int di[3] = {1 ,1 ,-1};
@@ -276,8 +276,52 @@ void allPawnMoves(piece *aPiece, gameState *theGame) {
         
     }
     return;
+}*/
+void allPawnMoves(piece *aPiece, gameState *theGame) {
+    int movesCounter = 0;
+    int i0 = aPiece->position[0];
+    int j0 = aPiece->position[1];
+    int dir;
+    if (aPiece->color == 0) {
+    dir = -1;
+    } else {
+    dir = 1;
+    }    
+    int ni = i0 + dir;
+    int nj = j0;
+    if (0 <= ni && ni < 8 && !theGame->board[ni][nj]) {
+        theGame->moves[movesCounter][0] = ni;
+        theGame->moves[movesCounter][1] = nj;
+        movesCounter++;
+        int firstRow;
+        if (aPiece->color == 0) {
+        firstRow = 6;
+        } else {
+        firstRow = 1;
+        }
+        if (i0 == firstRow) {
+            int ni2 = i0 + 2*dir;
+            if (theGame->board[ni2][nj] == NULL) {
+                theGame->moves[movesCounter][0] = ni2;
+                theGame->moves[movesCounter][1] = nj;
+                movesCounter++;
+            }
+        }
+    }
+    for (int dj = -1; dj <= 1; dj += 2) {
+        ni = i0 + dir;
+        nj = j0 + dj;
+        if (0 <= ni && ni < 8 && 0 <= nj && nj < 8) {
+            piece *target = theGame->board[ni][nj];
+            if (theGame->board[ni][nj] && target->color != aPiece->color) {
+                theGame->moves[movesCounter][0] = ni;
+                theGame->moves[movesCounter][1] = nj;
+                movesCounter++;
+            }
+        }
+    }
+    return;
 }
-
 void allPiecesMoves(gameState *theGame, piece **allWhite, piece **allBlack) {
     for(int i=0;i<16;i++){
         piece *aPiece = allWhite[i];
@@ -317,6 +361,7 @@ void allPiecesMoves(gameState *theGame, piece **allWhite, piece **allBlack) {
     }
     return;
 }
+    
 
 int checkMoveValidity2(int *move, gameState *theGame) {
     // this function doesn't check pinned pieces
