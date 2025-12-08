@@ -43,7 +43,6 @@ void startNormalGame() {
         allPiecesMoves(theGame, theGame->allWhite, theGame->allBlack);
         moveStoI(move , theGame->moves[theGame->movesNumber]);
         if (checkMoveValidity2(theGame->moves[theGame->movesNumber], theGame)) {
-            // captured pieces memory leak
             printf("Valid move\n");
             int fromRow = theGame->moves[theGame->movesNumber][1];
             int fromCol = theGame->moves[theGame->movesNumber][0];
