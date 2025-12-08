@@ -1,6 +1,7 @@
 directories:
 	mkdir -p obj
 	mkdir -p bin
+	mkdir -p saves
 
 main.o: directories
 	gcc -c -Wall -Wextra -Wpedantic src/main.c       -o obj/main.o

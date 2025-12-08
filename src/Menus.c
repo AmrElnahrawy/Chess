@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../include/SaveLoad.h"
 #include "../include/Utilities.h"
 #include "../include/GameState.h"
 #include "../include/Menus.h"
@@ -36,7 +37,8 @@ void startNormalGame() {
             freeBoard(theGame);
             return;
         } else if (move[0] == 's') {
-            
+            if (saveGame(theGame))
+                return;
         } else if (move[0] == 'u') {
             
         }
