@@ -312,6 +312,7 @@ void allKnightMoves(piece *aPiece, gameState *theGame)
 }*/
 void allPawnMoves(piece *aPiece, gameState *theGame)
 {
+    // En passant is stored at the end of the array
     int movesCounter = 0;
     int i0 = aPiece->position[0];
     int j0 = aPiece->position[1];
@@ -338,6 +339,7 @@ void allPawnMoves(piece *aPiece, gameState *theGame)
             {
                 aPiece->pieceView[movesCounter][0] = ni2;
                 aPiece->pieceView[movesCounter][1] = nj;
+                aPiece->enPassant = 1;
                 movesCounter++;
             }
         }
@@ -354,6 +356,11 @@ void allPawnMoves(piece *aPiece, gameState *theGame)
                 aPiece->pieceView[movesCounter][1] = nj;
                 movesCounter++;
             }
+            if (theGame->board[i0][nj] && theGame->board[i0][nj]->color != aPiece->color && theGame->board[i0][nj]->enPassant == 1) {
+                aPiece->pieceView[4][0] = ni;
+                aPiece->pieceView[4][1] = nj;
+            }
+            
         }
     }
     return;

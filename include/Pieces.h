@@ -11,7 +11,7 @@ typedef struct
     int position[2];  // it's cell on the board
     int hasMoved;     // 0
     int pinned;       // 0
-    int enPassant;    // 0
+    int enPassant;    // 0 Check if this piece can be captured
     int captured;     // 0
     int capturedWhen; // -1
     int **pieceView; 
