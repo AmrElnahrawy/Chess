@@ -482,3 +482,157 @@ void viewAllPiecesMoves(piece **allWhite, piece **allBlack)
         }
     }
 }
+
+
+/*void checkAroundKing(piece *aPiece, gameState *theGame){
+    int currentPosition[2] = {aPiece->position[0] , aPiece->position[1]};
+    int di[4] = {1,-1, 1,-1};
+    int dj[4] = {1, 1,-1,-1};
+    for (int d = 0; d < 4; d++) {
+        int ni = currentPosition[0] + di[d];
+        int nj = currentPosition[1] + dj[d];
+        while (0 <= ni && ni < 8 && 0 <= nj && nj < 8) {
+            if (!theGame->board[ni][nj]){
+                    ni+= di[d];
+                    nj+= dj[d];
+            }
+           else if(theGame->board[ni][nj]->color == aPiece->color){
+                  break;
+            }            
+            else if(theGame->board[ni][nj]->color != aPiece->color){
+                    if(aPiece->type=='b'||aPiece->type=='B'||aPiece->type=='q'||aPiece->type=='Q'){
+                        printf(" ");
+                    }                  
+            }
+        }
+    }
+    int dk[4] = {1,0,-1,0};
+    int dl[4] = {0,1,0,-1};
+    for (int d = 0; d < 4; d++) {
+        int nk = currentPosition[0] + dk[d];
+        int nl = currentPosition[1] + dl[d];
+        while (0 <= nk && nk < 8 && 0 <= nl && nl < 8) {
+            if (!theGame->board[nk][nl]){
+                    nk+= dk[d];
+                    nl+= dl[d];
+            }
+           else if(theGame->board[nk][nl]->color == aPiece->color){
+                  break;
+            }            
+            else if(theGame->board[nk][nl]->color != aPiece->color){
+                    if(aPiece->type=='r'||aPiece->type=='R'||aPiece->type=='q'||aPiece->type=='Q'){
+                        printf(" ");
+                    }                  
+            }
+        }
+    }
+
+    int ds[8] = {1, 2, 2, 1, -1, -2, -1, -2};
+    int dt[8] = {2, 1, -1, -2, 2, 1, -2, -1};
+    for (int d = 0; d < 8; d++) {
+        int ns = currentPosition[0] + ds[d];
+        int nt = currentPosition[1] + dt[d];
+        while (0 <= ns && ns < 8 && 0 <= nt && nt < 8) {
+            if (!theGame->board[ns][nt]){
+                    ns+= ds[d];
+                    nt+= dt[d];
+            }
+           else if(theGame->board[ns][nt]->color == aPiece->color){
+                  break;
+            }            
+            else if(theGame->board[ns][nt]->color != aPiece->color){
+                    if(aPiece->type=='n'||aPiece->type=='N'){
+                        printf(" ");
+                    }                  
+            }
+        }
+    }    
+    return;    
+}
+*/
+
+
+int isKingInCheck(gameState *theGame, piece *king) {
+    int i = king->position[0];
+    int j = king->position[1];
+    int enemyColor = (king->color == WHITE ? BLACK : WHITE);
+    int kdi[8] = {1,2,2,1,-1,-2,-2,-1};
+    int kdj[8] = {2,1,-1,-2,-2,-1,1,2};
+    for (int d = 0; d < 8; d++) {
+        int ni = i + kdi[d];
+        int nj = j + kdj[d];
+        if (ni < 0 || ni >= 8 || nj < 0 || nj >= 8)
+            continue;
+        piece *p = theGame->board[ni][nj];
+        if (p && p->color == enemyColor && (p->type == 'n' || p->type == 'N'))
+            return 1;
+    }
+    int pawnDir = (king->color == WHITE ? -1 : +1);
+    int pi = i + pawnDir;
+    int pj1 = j + 1;
+    int pj2 = j - 1;
+    if (pi >= 0 && pi < 8) {
+        if (pj1 >= 0 && pj1 < 8) {
+            piece *p = theGame->board[pi][pj1];
+            if (p && p->color == enemyColor && (p->type == 'p' || p->type == 'P'))
+                return 1;
+        }
+        if (pj2 >= 0 && pj2 < 8) {
+            piece *p = theGame->board[pi][pj2];
+            if (p && p->color == enemyColor && (p->type == 'p' || p->type == 'P'))
+                return 1;
+        }
+    }
+    int bdi[4] = {1,-1,1,-1};
+    int bdj[4] = {1,1,-1,-1};
+    for (int d = 0; d < 4; d++) {
+        int ni = i + bdi[d];
+        int nj = j + bdj[d];
+        while (ni >= 0 && ni < 8 && nj >= 0 && nj < 8) {
+            piece *p = theGame->board[ni][nj];
+            if (!p) {
+                ni += bdi[d];
+                nj += bdj[d];
+                continue;
+            }
+            if (p->color == king->color)
+                break;
+            if (p->color == enemyColor && 
+               (p->type == 'b' || p->type == 'B' || p->type == 'q' || p->type == 'Q'))
+                return 1;
+            break;
+        }
+    }
+    int rdi[4] = {1,-1,0,0};
+    int rdj[4] = {0,0,1,-1};
+    for (int d = 0; d < 4; d++) {
+        int ni = i + rdi[d];
+        int nj = j + rdj[d];
+        while (ni >= 0 && ni < 8 && nj >= 0 && nj < 8) {
+            piece *p = theGame->board[ni][nj];
+            if (!p) {
+                ni += rdi[d];
+                nj += rdj[d];
+                continue;
+            }
+            if (p->color == king->color)
+                break;
+            if (p->color == enemyColor &&
+               (p->type == 'r' || p->type == 'R' || p->type == 'q' || p->type == 'Q'))
+                return 1;
+            break;
+        }
+    }
+    int mdi[8] = {1,1,0,-1,-1,-1,0,1};
+    int mdj[8] = {0,1,1,1,0,-1,-1,-1};
+    for (int d = 0; d < 8; d++) {
+        int ni = i + mdi[d];
+        int nj = j + mdj[d];
+        if (ni < 0 || ni >= 8 || nj < 0 || nj >= 8)
+            continue;
+        piece *p = theGame->board[ni][nj];
+        if (p && p->color == enemyColor && (p->type == 'k' || p->type == 'K'))
+            return 1;
+    }
+    return 0;
+}
