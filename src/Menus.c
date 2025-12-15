@@ -42,64 +42,33 @@ void startNormalGame() {
         } else if (move[0] == 'u') {
             
         }
-        allPiecesMoves(theGame, theGame->allWhite, theGame->allBlack);
+
+        if (theGame->movesNumber == 0)
+            allWhitePiecesMoves(theGame, theGame->allWhite);
+        
         moveStoI(move , theGame->moves[theGame->movesNumber]);
-        if (checkMoveValidity2(theGame->moves[theGame->movesNumber], theGame)) {
+        if (checkMoveValidity(theGame->moves[theGame->movesNumber], theGame)) {
             printf("Valid move\n");
-            int fromRow = theGame->moves[theGame->movesNumber][1];
-            int fromCol = theGame->moves[theGame->movesNumber][0];
-            int toRow = theGame->moves[theGame->movesNumber][3];
-            int toCol = theGame->moves[theGame->movesNumber][2];
-            theGame->board[toRow][toCol] = theGame->board[fromRow][fromCol];
-            theGame->board[toRow][toCol]->hasMoved = 1;
-            theGame->board[toRow][toCol]->position[0] = toRow ;
-            theGame->board[toRow][toCol]->position[1] = toCol;
-            if (theGame->movesNumber % 2 == 0) {
-                theGame->allWhite[theGame->board[toRow][toCol]->id] = theGame->board[toRow][toCol];                
-            } else {
-                theGame->allBlack[theGame->board[toRow][toCol]->id] = theGame->board[toRow][toCol];
-            }
-            theGame->board[theGame->moves[theGame->movesNumber][1]][theGame->moves[theGame->movesNumber][0]] = NULL;
-            theGame->movesNumber++;
+            doMove(theGame->moves[theGame->movesNumber], theGame);
         }
-        else 
-            printf("Invalid move2\n");
+        else {
+            printf("Invalid move\n");
+            getchar();
+            continue;
+        }
         getchar();
+        if (theGame->movesNumber % 2 == 0) // Update other player's view 
+            allBlackPiecesMoves(theGame, theGame->allBlack);
+        else
+            allWhitePiecesMoves(theGame, theGame->allWhite);
         /////////////////////////////////////////////////////////
         viewAllPiecesMoves(theGame->allWhite, theGame->allBlack);
         getchar();
         /////////////////////////////////////////////////////////
+        theGame->movesNumber++;
         free(move);
     }
     free(theGame);
-}
-
-int displayModeMenu()
-{
-    int choice = 0;
-    do
-    {
-        system("clear"); // clear console
-        printf("1) Normal \n");
-        printf("2) Fischer Random\n");
-        printf("3) return\n");
-        printf("Enter Option number: ");
-        choice = singleDigitInput();
-    } while (choice < 1 || 3 < choice);
-    if (choice == 1)
-    {
-        startNormalGame();
-        return 0;
-    }
-    else if (choice == 2)
-    {
-        return 0;
-    }
-    else if (choice == 3)
-    {
-        return 0;
-    }
-    return 0;
 }
 
 void displayMainMenu()
@@ -119,8 +88,7 @@ void displayMainMenu()
 
         if (choice == 1)
         {
-            if (displayModeMenu() == 0)
-                continue;
+            startNormalGame();
         }
         else if (choice == 2)
         {

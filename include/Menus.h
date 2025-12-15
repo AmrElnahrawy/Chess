@@ -3,8 +3,6 @@
 
 /* ALL app menus */
 
-int displayModeMenu();
-
 void displayMainMenu();
 
 

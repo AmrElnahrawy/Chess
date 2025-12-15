@@ -22,7 +22,7 @@ void constructPieceView(piece *aPiece) {
         rows = 27;
     }
     else if (aPiece->type == 'k' || aPiece->type == 'K') {
-        rows = 8;
+        rows = 10; // 8 for left and 9 for right castling
     }
 
     aPiece->pieceView = (int**)malloc(rows * sizeof(int*));

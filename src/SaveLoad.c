@@ -5,11 +5,18 @@
 #include "../include/GameState.h"
 #include "../include/SaveLoad.h"
 
+// Cross-platform wrapper for localtime --/ from the internet \--
+#ifdef _WIN32
+    #define localtime_safe(timer, buf) (localtime_s(buf, timer) == 0 ? buf : NULL)
+#else
+    #define localtime_safe(timer, buf) localtime_r(timer, buf)
+#endif
+
 int saveGame(gameState *theGame) {
     struct tm temp;
     time_t t = time(NULL);
 
-    if (localtime_r(&t, &temp) == NULL) {
+    if (localtime_safe(&t, &temp) == NULL) {
         printf("Couldn't save game.\n");
         return 0;
     }
