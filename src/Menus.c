@@ -6,19 +6,24 @@
 #include "../include/GameState.h"
 #include "../include/Menus.h"
 
-void startNormalGame() {
+void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
     gameState *theGame = (gameState*)malloc(sizeof(gameState));
     if (theGame == NULL) {
         printf("ERROR: Not enough memory\n");
         getchar();
         exit(0);
     }
+
     constructNormalBoard(theGame);
+    
+    if (newOrLoad == 1)
+        loadGame(theGame, fileName); 
+
     while(1) {
         system("clear"); 
-        printf("TO Exit press ( x )\n");
-        printf("TO Save press ( s )\n");
-        printf("TO Undo press ( u )\n");
+        printf("TO Exit press ( X )\n");
+        printf("TO Save press ( S )\n");
+        printf("TO Undo press ( U )\n");
         printf("=======================================================\n");
         displayBoard(theGame);
         printf("=======================================================\n");
@@ -32,15 +37,19 @@ void startNormalGame() {
         if (!move) {
             printf("Invalid move1\n"); 
             continue;
-        } else if (move[0] == 'x') {
+        } else if (move[0] == 'X') {
             // memory leak still exist
             freeBoard(theGame);
+            free(theGame);
             return;
-        } else if (move[0] == 's') {
+        } else if (move[0] == 'S') {
             if (saveGame(theGame))
                 return;
-        } else if (move[0] == 'u') {
-            
+        } else if (move[0] == 'U') {
+            if (theGame->movesNumber == 0)
+                continue;
+            undo(theGame, theGame->moves, theGame->movesNumber);
+            continue;
         }
 
         if (theGame->movesNumber == 0)
@@ -88,10 +97,15 @@ void displayMainMenu()
 
         if (choice == 1)
         {
-            startNormalGame();
+            startNormalGame(0 , "");
         }
         else if (choice == 2)
         {
+            char* fileName;
+            printf("Enter game name: ");
+            fileName = loadInput();
+            startNormalGame(1 , fileName);
+            free(fileName);
         }
         else if (choice == 3)
         {

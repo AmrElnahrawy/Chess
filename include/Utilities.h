@@ -9,4 +9,6 @@ char *pieceMoveInput();
 
 void moveStoI(char *move, int *moves);
 
+char *loadInput();
+
 #endif

@@ -7,4 +7,6 @@
 
 int saveGame(gameState *theGame);
 
+void loadGame(gameState *theGame ,char* fileName);
+
 #endif

@@ -47,3 +47,11 @@ void constructPieceView(piece *aPiece) {
     aPiece->pieceViewSize = rows;
 }
 
+void freePieceView(piece *aPiece, int pieceviewSize) {
+    for (int i = 0; i < pieceviewSize; i++) {
+        free(aPiece->pieceView[i]);
+        aPiece->pieceView[i] = NULL;
+    }
+    free(aPiece->pieceView);
+    aPiece->pieceView = NULL;
+}

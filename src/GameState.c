@@ -44,17 +44,15 @@ void constructNormalBoard(gameState *theGame)
                     exit(0);
                 }
                 theGame->board[i][j]->captured = 0;
-                theGame->board[i][j]->capturedWhen = -1;
                 theGame->board[i][j]->position[0] = i;
                 theGame->board[i][j]->position[1] = j;
                 theGame->board[i][j]->hasMoved = 0;
-                theGame->board[i][j]->pinned = 0;
+                theGame->board[i][j]->enPassant = 0;
                 if (i == 1)
                 {
                     theGame->allBlack[8 + j] = theGame->board[i][j];
                     theGame->board[i][j]->type = 'P';
                     theGame->board[i][j]->color = 1;
-                    theGame->board[i][j]->id = 8 + j;
                     constructPieceView(theGame->board[i][j]);
                 }
                 else if (i == 6)
@@ -62,7 +60,6 @@ void constructNormalBoard(gameState *theGame)
                     theGame->allWhite[8 + j] = theGame->board[i][j];
                     theGame->board[i][j]->type = 'p';
                     theGame->board[i][j]->color = 0;
-                    theGame->board[i][j]->id = 8 + j;
                     constructPieceView(theGame->board[i][j]);
                 }
                 else if (i == 0)
@@ -70,7 +67,6 @@ void constructNormalBoard(gameState *theGame)
                     theGame->allBlack[j] = theGame->board[i][j];
                     theGame->board[i][j]->type = blackPieces[j];
                     theGame->board[i][j]->color = 1;
-                    theGame->board[i][j]->id = j;
                     constructPieceView(theGame->board[i][j]);
                 }
                 else if (i == 7)
@@ -78,7 +74,6 @@ void constructNormalBoard(gameState *theGame)
                     theGame->allWhite[j] = theGame->board[i][j];
                     theGame->board[i][j]->type = whitePieces[j];
                     theGame->board[i][j]->color = 0;
-                    theGame->board[i][j]->id = j;
                     constructPieceView(theGame->board[i][j]);
                 }
             }
@@ -86,13 +81,15 @@ void constructNormalBoard(gameState *theGame)
     }
 }
 
-void freeBoard(gameState *theGame)
-{
+void freeBoard(gameState *theGame) {
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
         {
-            free(theGame->board[i][j]);
+            if (theGame->board[i][j] != NULL) {
+                freePieceView(theGame->board[i][j], theGame->board[i][j]->pieceViewSize);
+                free(theGame->board[i][j]);
+            }
         }
         free(theGame->board[i]);
     }
@@ -157,6 +154,16 @@ void allKingMoves(piece *aPiece, gameState *theGame)
         }
     }
 
+    for (int i = movesCounter; i < 8; i++) {
+        aPiece->pieceView[i][0] = 0;
+        aPiece->pieceView[i][1] = 0;
+    }
+
+    aPiece->pieceView[8][0] = 0;
+    aPiece->pieceView[8][1] = 0;
+    aPiece->pieceView[9][0] = 0;
+    aPiece->pieceView[9][1] = 0;
+
     movesCounter = 8;
 
     if (aPiece->color == 0)
@@ -210,6 +217,7 @@ void allKingMoves(piece *aPiece, gameState *theGame)
 
     return;
 }
+
 void allRookMoves(piece *aPiece, gameState *theGame)
 {
     int movesCounter = 0;
@@ -242,6 +250,12 @@ void allRookMoves(piece *aPiece, gameState *theGame)
             }
         }
     }
+
+    for (int i = movesCounter; i < 14; i++) {
+        aPiece->pieceView[i][0] = 0;
+        aPiece->pieceView[i][1] = 0;
+    }
+
     return;
 }
 
@@ -277,6 +291,12 @@ void allBishopMoves(piece *aPiece, gameState *theGame)
             }
         }
     }
+
+    for (int i = movesCounter; i < 13; i++) {
+        aPiece->pieceView[i][0] = 0;
+        aPiece->pieceView[i][1] = 0;
+    }
+
     return;
 }
 
@@ -312,6 +332,12 @@ void allQueenMoves(piece *aPiece, gameState *theGame)
             }
         }
     }
+
+    for (int i = movesCounter; i < 27; i++) {
+        aPiece->pieceView[i][0] = 0;
+        aPiece->pieceView[i][1] = 0;
+    }
+
     return;
 }
 
@@ -335,15 +361,26 @@ void allKnightMoves(piece *aPiece, gameState *theGame)
             }
         }
     }
+
+    for (int i = movesCounter; i < 8; i++) {
+        aPiece->pieceView[i][0] = 0;
+        aPiece->pieceView[i][1] = 0;
+    }
     return;
 }
 
 void allPawnMoves(piece *aPiece, gameState *theGame)
 {
+    
     // clear en passant before update
     aPiece->enPassant = 0;
     // En passant is stored at the end of the array
     int movesCounter = 0;
+    for (int i = 0; i < 5; i++) {
+        aPiece->pieceView[i][0] = 0;
+        aPiece->pieceView[i][1] = 0;
+    }
+
     int i0 = aPiece->position[0];
     int j0 = aPiece->position[1];
     int dir;
@@ -374,6 +411,7 @@ void allPawnMoves(piece *aPiece, gameState *theGame)
             }
         }
     }
+
     for (int dj = -1; dj <= 1; dj += 2)
     {
         ni = i0 + dir;
@@ -392,6 +430,11 @@ void allPawnMoves(piece *aPiece, gameState *theGame)
                 aPiece->pieceView[4][1] = nj;
             }
         }
+    }
+
+    for (int i = movesCounter; i < 8; i++) {
+        aPiece->pieceView[movesCounter][0] = 0;
+        aPiece->pieceView[movesCounter][1] = 0;
     }
     return;
 }
@@ -603,12 +646,21 @@ int checkMoveValidity(int *move, gameState *theGame)
     return 0;
 }
 
+void promotion(piece *aPiece, int type) {
+    freePieceView(aPiece, aPiece->pieceViewSize);
+    if (aPiece->color == 1)
+        aPiece->type = (char) type;
+    else
+        aPiece->type = (char) type + 32;
+    constructPieceView(aPiece);
+}
+
 void doMove(int *move, gameState *theGame)
 {
-    int fromRow = theGame->moves[theGame->movesNumber][1];
-    int fromCol = theGame->moves[theGame->movesNumber][0];
-    int toRow = theGame->moves[theGame->movesNumber][3];
-    int toCol = theGame->moves[theGame->movesNumber][2];
+    int fromRow = move[1];
+    int fromCol = move[0];
+    int toRow = move[3];
+    int toCol = move[2];
 
     if (theGame->board[toRow][toCol])
         theGame->board[toRow][toCol]->captured = 1;
@@ -650,31 +702,53 @@ void doMove(int *move, gameState *theGame)
             theGame->board[7][7] = NULL;
         }
         else {
-            theGame->board[0][5] = theGame->board[0][0];
+            theGame->board[0][5] = theGame->board[0][7];
             theGame->board[0][5]->hasMoved = 1;
             theGame->board[0][5]->position[0] = 0;
             theGame->board[0][5]->position[1] = 5;
-            theGame->board[0][0] = NULL;
+            theGame->board[0][7] = NULL;
         }
     }
     
-
+    
     theGame->board[toRow][toCol] = theGame->board[fromRow][fromCol];
     theGame->board[toRow][toCol]->hasMoved = 1;
     theGame->board[toRow][toCol]->position[0] = toRow;
     theGame->board[toRow][toCol]->position[1] = toCol;
-    //////////// may be deleted
-    if (theGame->movesNumber % 2 == 0)
-    {
-        theGame->allWhite[theGame->board[toRow][toCol]->id] = theGame->board[toRow][toCol];
-    }
-    else
-    {
-        theGame->allBlack[theGame->board[toRow][toCol]->id] = theGame->board[toRow][toCol];
-    }
-    ////////////
+    
     theGame->board[fromRow][fromCol] = NULL;
+    
+    if (move[4] > 4) {
+        promotion(theGame->board[toRow][toCol], move[4]);
+    }
 }
+
+void undo(gameState *theGame,int moves[400][5], int movesNumber) {
+    freeBoard(theGame);
+    constructNormalBoard(theGame);
+    int i = 0;
+    while (i < movesNumber - 1) {
+        doMove(moves[i], theGame);
+        i++;
+    }
+    theGame->movesNumber = i;
+    return;
+}
+
+void currentBoardString(gameState *theGame) {
+
+    return;
+}
+
+int repetition(char* boardString, int boardStringNumber) {
+    return 0;
+}
+
+int insufficientPieces(gameState *theGame) {
+    
+    return 0;
+}
+
 
 /////////////// test functions "will be deleted" ///////////////
 

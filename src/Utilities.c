@@ -22,6 +22,7 @@ char *pieceMoveInput() {
     if (move == NULL) {
         printf("ERROR: Not enough memory\n");
         getchar();
+        free(move);
         return NULL;
     }
     if (fgets(input, 100, stdin) == NULL) {
@@ -29,16 +30,16 @@ char *pieceMoveInput() {
         return NULL;
     }
 
-    if (input[0] == 'x' && input[1] == '\n' && input[2] == '\0') {
-        move[0] = 'x';
+    if (input[0] == 'X' && input[1] == '\n' && input[2] == '\0') {
+        move[0] = 'X';
         move[1] = '\0';
         return move;
-    } else if (input[0] == 's' && input[1] == '\n' && input[2] == '\0') {
-        move[0] = 's';
+    } else if (input[0] == 'S' && input[1] == '\n' && input[2] == '\0') {
+        move[0] = 'S';
         move[1] = '\0';
         return move;
-    } else if (input[0] == 'u' && input[1] == '\n' && input[2] == '\0') {
-        move[0] = 'u';
+    } else if (input[0] == 'U' && input[1] == '\n' && input[2] == '\0') {
+        move[0] = 'U';
         move[1] = '\0';
         return move;
     }
@@ -109,4 +110,23 @@ void moveStoI(char *move, int *moves) {
         i++;
     }
     return;
+}
+
+char *loadInput() {
+    char input[100];
+    char *fileName = (char*)malloc(50);
+    if (fileName == NULL) {
+        return fileName;
+    }
+    if (fgets(input, 100, stdin) == NULL) {
+        return fileName;
+    }
+    if (input[20] != '\0') {
+        return fileName;
+    } else {
+        input[strlen(input) - 1] = '\0';
+    }
+
+    strcpy(fileName, input);
+    return fileName;
 }

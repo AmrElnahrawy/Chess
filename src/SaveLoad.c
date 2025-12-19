@@ -33,6 +33,7 @@ int saveGame(gameState *theGame) {
     FILE* fptr = fopen(filesrc, "w");
     if (fptr == NULL) {
         printf("Couldn't save game.\n");
+        getchar();
         return 0;
     }
     
@@ -47,4 +48,29 @@ int saveGame(gameState *theGame) {
     fclose(fptr);
     printf("The game has been saved correctly.\n");
     return 1;
+}
+
+void loadGame(gameState *theGame ,char* fileName) {    
+    char filesrc[100];
+    snprintf(filesrc, sizeof(filesrc), "saves/%s.txt", fileName);
+
+    FILE* fptr;
+    fptr = fopen(filesrc, "r");
+    if (fptr == NULL) {
+        printf("Couldn't load game.\n");
+        getchar();
+        exit(0);
+    }
+
+    int i = 0;
+    while (fscanf(fptr, "%d %d %d %d %d", &theGame->moves[i][0], &theGame->moves[i][1], &theGame->moves[i][2], &theGame->moves[i][3], &theGame->moves[i][4]) == 5) {
+        doMove(theGame->moves[i], theGame);
+        i++;
+        theGame->movesNumber = i;
+        if (i > 399)
+            break;
+    }
+
+    fclose(fptr);
+    return;
 }
