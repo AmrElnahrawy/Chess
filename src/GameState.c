@@ -749,6 +749,120 @@ int insufficientPieces(gameState *theGame) {
     return 0;
 }
 
+int auxiliaryMove(gameState *theGame, int color, int move[5])
+{
+    int flag = 0;
+    int fromRow = move[1];
+    int fromCol = move[0];
+    int toRow = move[3];
+    int toCol = move[2];
+
+    if (move[4] == 1) // en passant
+    {
+        piece *temp = theGame->board[fromRow][toCol];
+        theGame->board[fromRow][toCol] = NULL;
+        theGame->board[toRow][toCol] = theGame->board[fromRow][fromCol];
+        theGame->board[fromRow][fromCol] = NULL;
+
+        if (color)
+            flag = isKingInCheck(theGame, theGame->allBlack[4]);
+        else
+            flag = isKingInCheck(theGame, theGame->allWhite[4]);
+
+        theGame->board[fromRow][fromCol] = theGame->board[toRow][toCol];
+        theGame->board[fromRow][toCol] = temp;
+
+        return flag;
+    } 
+    
+    piece *temp = theGame->board[toRow][toCol];
+    theGame->board[toRow][toCol] = theGame->board[fromRow][fromCol];
+    theGame->board[fromRow][fromCol] = NULL;
+    theGame->board[toRow][toCol]->position[0] = toRow;
+    theGame->board[toRow][toCol]->position[1] = toCol;
+
+    if (color)
+        flag = isKingInCheck(theGame, theGame->allBlack[4]);
+    else
+        flag = isKingInCheck(theGame, theGame->allWhite[4]);
+
+    theGame->board[fromRow][fromCol] = theGame->board[toRow][toCol];
+    theGame->board[toRow][toCol] = temp;
+    theGame->board[fromRow][fromCol]->position[0] = fromRow;
+    theGame->board[fromRow][fromCol]->position[1] = fromCol;
+
+    return flag;
+}
+
+int finalCheck(gameState *theGame, piece **allWhite, piece **allBlack) // 0 for at least one valid move, 1 no Valid move
+{
+    if (theGame->movesNumber % 2 == 0) // end of white's turn, check black
+    {
+        for (int i = 0; i < 16; i++) // check moves of each piece
+        {
+            if (!allBlack[i] || allBlack[i]->captured == 1)
+                continue;
+            for (int j = 0; j < allBlack[i]->pieceViewSize; j++) 
+            {
+                if (allBlack[i]->pieceView[j][0] == 0)
+                    continue;
+
+                int move[5] = {allBlack[i]->position[1], allBlack[i]->position[0], allBlack[i]->pieceView[j][1], allBlack[i]->pieceView[j][0]};
+                if (allBlack[i]->type == 'P')
+                {
+                    if (j == 4) // enpassant check
+                        move[4] = 1;
+                }
+                else if (allBlack[i]->type == 'K')
+                    if (j == 8 || j == 9)
+                        continue;
+                
+                int flag = auxiliaryMove(theGame, 1, move);
+                if (flag == 0)
+                    return 0;
+                else
+                {
+                    allBlack[i]->pieceView[j][0] = 0;
+                    allBlack[i]->pieceView[j][1] = 0;
+                }
+            }
+        }
+    }
+    else // end of black's turn, check white
+    {
+        for (int i = 0; i < 16; i++) // check moves of each piece
+        {
+            if (!allWhite[i] || allWhite[i]->captured == 1)
+                continue;
+
+            for (int j = 0; j < allWhite[i]->pieceViewSize; j++) 
+            {
+                if (allWhite[i]->pieceView[j][0] == 0)
+                    continue;
+
+                int move[5] = {allWhite[i]->position[1], allWhite[i]->position[0], allWhite[i]->pieceView[j][1], allWhite[i]->pieceView[j][0]};
+                if (allWhite[i]->type == 'p') 
+                {
+                    if (j == 4) // enpassant check
+                        move[4] = 1;
+                }
+                else if (allWhite[i]->type == 'k')
+                    if (j == 8 || j == 9)
+                        continue;
+                
+                int flag = auxiliaryMove(theGame, 0, move);
+                if (flag == 0)
+                    return 0;
+                else
+                {
+                    allWhite[i]->pieceView[j][0] = 0;
+                    allWhite[i]->pieceView[j][1] = 0;
+                }
+            }
+        }
+    }
+    return 1;
+}
 
 /////////////// test functions "will be deleted" ///////////////
 

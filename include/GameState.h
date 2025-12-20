@@ -50,6 +50,10 @@ int repetition(char* boardString, int boardStringNumber);
 
 int insufficientPieces(gameState *theGame);
 
+int auxiliaryMove(gameState *theGame, int color, int move[5]);
+
+int finalCheck(gameState *theGame, piece **allWhite, piece **allBlack);
+
 /////////////// test functions "will be deleted" ///////////////
 
 void viewAllPiecesMoves(piece **allWhite, piece **allBlack);

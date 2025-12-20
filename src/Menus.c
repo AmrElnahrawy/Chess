@@ -38,17 +38,20 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             printf("Invalid move1\n"); 
             continue;
         } else if (move[0] == 'X') {
-            // memory leak still exist
             freeBoard(theGame);
             free(theGame);
             return;
         } else if (move[0] == 'S') {
-            if (saveGame(theGame))
+            if (saveGame(theGame)) {
+                freeBoard(theGame);
+                free(theGame);
                 return;
+            }
         } else if (move[0] == 'U') {
             if (theGame->movesNumber == 0)
                 continue;
             undo(theGame, theGame->moves, theGame->movesNumber);
+            free(move);
             continue;
         }
 
@@ -57,12 +60,18 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
         
         moveStoI(move , theGame->moves[theGame->movesNumber]);
         if (checkMoveValidity(theGame->moves[theGame->movesNumber], theGame)) {
-            printf("Valid move\n");
+            if ((theGame->movesNumber % 2 == 0 && auxiliaryMove(theGame, 0, theGame->moves[theGame->movesNumber])) || (theGame->movesNumber % 2 == 1 && auxiliaryMove(theGame, 1, theGame->moves[theGame->movesNumber]))) // check current player
+            {
+                free(move);
+                continue;
+            }    
             doMove(theGame->moves[theGame->movesNumber], theGame);
+            printf("Valid move\n");
         }
         else {
             printf("Invalid move\n");
             getchar();
+            free(move);
             continue;
         }
         getchar();
@@ -70,6 +79,39 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             allBlackPiecesMoves(theGame, theGame->allBlack);
         else
             allWhitePiecesMoves(theGame, theGame->allWhite);
+
+        if ((theGame->movesNumber % 2 == 1 && isKingInCheck(theGame, theGame->allWhite[4])) || (theGame->movesNumber % 2 == 0 && isKingInCheck(theGame, theGame->allBlack[4]))) // check opponent
+        {
+            if (finalCheck(theGame, theGame->allWhite, theGame->allBlack))
+            {
+                system("clear"); 
+                printf("=======================================================\n");
+                displayBoard(theGame);
+                printf("=======================================================\n");
+                if (theGame->movesNumber % 2 == 0)
+                    printf("White Win\n");
+                else
+                    printf("Black Win\n");
+                getchar( );
+                free(move);
+                break;
+            }
+        }
+        else // not at check
+        {
+            if (finalCheck(theGame, theGame->allWhite, theGame->allBlack))
+            {
+                system("clear"); 
+                printf("=======================================================\n");
+                displayBoard(theGame);
+                printf("=======================================================\n");
+                printf("Stalemate\n");
+                getchar( );
+                free(move);
+                break;  
+            }
+        }
+        
         /////////////////////////////////////////////////////////
         viewAllPiecesMoves(theGame->allWhite, theGame->allBlack);
         getchar();
@@ -77,6 +119,7 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
         theGame->movesNumber++;
         free(move);
     }
+    freeBoard(theGame);
     free(theGame);
 }
 
