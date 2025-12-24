@@ -6,6 +6,8 @@
 #include "../include/GameState.h"
 #include "../include/Menus.h"
 
+#include <unistd.h>  // test //////////////////////////////////////////////////////////////////
+
 void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
     gameState *theGame = (gameState*)malloc(sizeof(gameState));
     if (theGame == NULL) {
@@ -33,9 +35,10 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             printf("Black to move: ");
         }
         char *move = pieceMoveInput();
+        printf("%s\n", move); // test //////////////////////////////////////////////////////////////////
+        usleep(1000000); // test //////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////
         if (!move) {
-            printf("Invalid move1\n"); 
             continue;
         } else if (move[0] == 'X') {
             freeBoard(theGame);
@@ -49,14 +52,14 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             }
         } else if (move[0] == 'U') {
             if (theGame->movesNumber == 0)
-                continue;
+            continue;
             undo(theGame, theGame->moves, theGame->movesNumber);
             free(move);
             continue;
         }
-
+        
         if (theGame->movesNumber == 0)
-            allWhitePiecesMoves(theGame, theGame->allWhite);
+        allWhitePiecesMoves(theGame, theGame->allWhite);
         
         moveStoI(move , theGame->moves[theGame->movesNumber]);
         if (checkMoveValidity(theGame->moves[theGame->movesNumber], theGame)) {
@@ -66,7 +69,6 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
                 continue;
             }    
             doMove(theGame->moves[theGame->movesNumber], theGame);
-            printf("Valid move\n");
         }
         else {
             printf("Invalid move\n");
@@ -74,12 +76,11 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             free(move);
             continue;
         }
-        getchar();
         if (theGame->movesNumber % 2 == 0) // Update other player's view 
-            allBlackPiecesMoves(theGame, theGame->allBlack);
+        allBlackPiecesMoves(theGame, theGame->allBlack);
         else
-            allWhitePiecesMoves(theGame, theGame->allWhite);
-
+        allWhitePiecesMoves(theGame, theGame->allWhite);
+        
         if ((theGame->movesNumber % 2 == 1 && isKingInCheck(theGame, theGame->allWhite[4])) || (theGame->movesNumber % 2 == 0 && isKingInCheck(theGame, theGame->allBlack[4]))) // check opponent
         {
             if (finalCheck(theGame, theGame->allWhite, theGame->allBlack))
@@ -92,6 +93,7 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
                     printf("White Win\n");
                 else
                     printf("Black Win\n");
+                usleep(2000000); // test //////////////////////////////////////////////////////////////////
                 getchar( );
                 free(move);
                 break;
@@ -106,6 +108,7 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
                 displayBoard(theGame);
                 printf("=======================================================\n");
                 printf("Stalemate\n");
+                usleep(2000000); // test //////////////////////////////////////////////////////////////////
                 getchar( );
                 free(move);
                 break;  
@@ -113,12 +116,14 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
         }
         
         /////////////////////////////////////////////////////////
-        viewAllPiecesMoves(theGame->allWhite, theGame->allBlack);
-        getchar();
+        // viewAllPiecesMoves(theGame->allWhite, theGame->allBlack);
+        // getchar();
         /////////////////////////////////////////////////////////
+ 
         theGame->movesNumber++;
         free(move);
     }
+
     freeBoard(theGame);
     free(theGame);
 }
@@ -136,6 +141,7 @@ void displayMainMenu()
             printf("3) Exit\n");
             printf("Enter Option number: ");
             choice = singleDigitInput();
+            usleep(2000000); // test //////////////////////////////////////////////////////////////////
         } while (choice < 1 || 3 < choice);
 
         if (choice == 1)

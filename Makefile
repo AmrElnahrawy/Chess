@@ -24,3 +24,6 @@ clean:
 
 run: main
 	bin/main
+
+test: main
+	cat testCases/*.txt | bin/main

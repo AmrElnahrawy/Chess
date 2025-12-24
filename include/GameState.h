@@ -12,8 +12,6 @@ typedef struct
     piece *allBlack[16];
     int moves[400][5];   // from from to to (promotion/flag) -> 1 for en passant, 2 for left castling, 3 for right castling "flags are updated in checkMoveValidity"
     int movesNumber;
-    char boardString[400][65];
-    int boardStringNumber;
 } gameState;
 
 void constructNormalBoard(gameState *theGame);

@@ -735,20 +735,6 @@ void undo(gameState *theGame,int moves[400][5], int movesNumber) {
     return;
 }
 
-void currentBoardString(gameState *theGame) {
-
-    return;
-}
-
-int repetition(char* boardString, int boardStringNumber) {
-    return 0;
-}
-
-int insufficientPieces(gameState *theGame) {
-    
-    return 0;
-}
-
 int auxiliaryMove(gameState *theGame, int color, int move[5])
 {
     int flag = 0;
