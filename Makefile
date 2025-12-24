@@ -27,3 +27,4 @@ run: main
 
 test: main
 	cat testCases/*.txt | bin/main
+	
