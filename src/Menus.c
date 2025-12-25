@@ -6,8 +6,6 @@
 #include "../include/GameState.h"
 #include "../include/Menus.h"
 
-#include <unistd.h>  // test //////////////////////////////////////////////////////////////////
-
 void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
     gameState *theGame = (gameState*)malloc(sizeof(gameState));
     if (theGame == NULL) {
@@ -35,9 +33,6 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             printf("Black to move: ");
         }
         char *move = pieceMoveInput();
-        printf("%s\n", move); // test //////////////////////////////////////////////////////////////////
-        usleep(1000000); // test //////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////////////
         if (!move) {
             continue;
         } else if (move[0] == 'X') {
@@ -95,7 +90,6 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
                     printf("White Wins\n");
                 else
                     printf("Black Wins\n");
-                usleep(2000000); // test //////////////////////////////////////////////////////////////////
                 getchar( );
                 free(move);
                 break;
@@ -110,7 +104,6 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
                 displayBoard(theGame);
                 printf("=======================================================\n");
                 printf("Stalemate\n");
-                usleep(2000000); // test //////////////////////////////////////////////////////////////////
                 getchar( );
                 free(move);
                 break;  
@@ -124,7 +117,6 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             displayBoard(theGame);
             printf("=======================================================\n");
             printf("Draw by Repetition\n");
-            usleep(2000000); // test //////////////////////////////////////////////////////////////////
             getchar( );
             free(move);
             break;
@@ -137,7 +129,6 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             displayBoard(theGame);
             printf("=======================================================\n");
             printf("Draw by Insufficient Material\n");
-            usleep(2000000); // test //////////////////////////////////////////////////////////////////
             getchar( );
             free(move);
             break;
@@ -150,7 +141,7 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             free(move);
             break;
         }
-        
+
         /////////////////////////////////////////////////////////
         // viewAllPiecesMoves(theGame->allWhite, theGame->allBlack);
         // getchar();
@@ -177,7 +168,6 @@ void displayMainMenu()
             printf("3) Exit\n");
             printf("Enter Option number: ");
             choice = singleDigitInput();
-            usleep(2000000); // test //////////////////////////////////////////////////////////////////
         } while (choice < 1 || 3 < choice);
 
         if (choice == 1)
