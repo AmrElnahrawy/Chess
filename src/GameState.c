@@ -733,6 +733,8 @@ void undo(gameState *theGame,int moves[400][5], int movesNumber) {
         i++;
     }
     theGame->movesNumber = i;
+    allWhitePiecesMoves(theGame, theGame->allWhite);
+    allBlackPiecesMoves(theGame, theGame->allBlack);
     return;
 }
 
