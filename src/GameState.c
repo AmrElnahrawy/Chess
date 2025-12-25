@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../include/Pieces.h"
 #include "../include/GameState.h"
 
@@ -847,6 +848,85 @@ int finalCheck(gameState *theGame, piece **allWhite, piece **allBlack) // 0 for 
             }
         }
     }
+    return 1;
+}
+
+void currentBoardString(gameState *theGame, char boardString[66]) {
+    boardString[0] = (theGame->movesNumber % 2 == 0 ? '0' : '1');
+    int index = 1;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            piece *p = theGame->board[i][j];
+            if (p == NULL) {
+                boardString[index] = '.';
+            } else {
+                boardString[index] = p->type;
+            }
+            index++;
+        }
+    }
+    boardString[65] = '\0';
+}
+
+int repetition(gameState *theGame, char* boardString) {
+    int repeats = 0;
+    for (int i = theGame->movesNumber - 1; i >= 0; i--) {
+        if (strcmp(boardString, theGame->boardString[i]) == 0) {
+            repeats++;
+            if (repeats >= 2) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+    
+int insufficientMaterial(gameState *theGame) {
+    int knights = 0, bishops = 0;
+    for (int i = 0; i < 16; i++)
+    {
+        if (theGame->allWhite[i] == NULL || theGame->allWhite[i]->captured == 1 || theGame->allWhite[i]->type == 'k')
+            continue;
+        switch (theGame->allWhite[i]->type)
+        {
+        case 'q':
+        case 'r':
+        case 'p':
+            return 0;
+        case 'b':
+            bishops++;
+            break;
+        case 'n':
+            knights++;
+            break;
+        }
+    }
+    if (knights + bishops > 1)
+        return 0;   
+    
+    knights = 0;
+    bishops = 0;         
+
+    for (int i = 0; i < 16; i++)
+    {
+        if (theGame->allBlack[i] == NULL || theGame->allBlack[i]->captured == 1 || theGame->allBlack[i]->type == 'K')
+            continue;
+        switch (theGame->allBlack[i]->type)
+        {
+        case 'Q':
+        case 'R':
+        case 'P':
+            return 0;
+        case 'B':
+            bishops++;
+            break;
+        case 'N':
+            knights++;
+            break;
+        }
+    }
+    if (knights + bishops > 1)
+        return 0;
     return 1;
 }
 

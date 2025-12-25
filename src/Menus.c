@@ -69,6 +69,7 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
                 continue;
             }    
             doMove(theGame->moves[theGame->movesNumber], theGame);
+            currentBoardString(theGame, theGame->boardString[theGame->movesNumber]);
         }
         else {
             printf("Invalid move\n");
@@ -76,10 +77,11 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             free(move);
             continue;
         }
+
         if (theGame->movesNumber % 2 == 0) // Update other player's view 
-        allBlackPiecesMoves(theGame, theGame->allBlack);
+            allBlackPiecesMoves(theGame, theGame->allBlack);
         else
-        allWhitePiecesMoves(theGame, theGame->allWhite);
+            allWhitePiecesMoves(theGame, theGame->allWhite);
         
         if ((theGame->movesNumber % 2 == 1 && isKingInCheck(theGame, theGame->allWhite[4])) || (theGame->movesNumber % 2 == 0 && isKingInCheck(theGame, theGame->allBlack[4]))) // check opponent
         {
@@ -90,9 +92,9 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
                 displayBoard(theGame);
                 printf("=======================================================\n");
                 if (theGame->movesNumber % 2 == 0)
-                    printf("White Win\n");
+                    printf("White Wins\n");
                 else
-                    printf("Black Win\n");
+                    printf("Black Wins\n");
                 usleep(2000000); // test //////////////////////////////////////////////////////////////////
                 getchar( );
                 free(move);
@@ -113,6 +115,40 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
                 free(move);
                 break;  
             }
+        }
+        
+        if (theGame->movesNumber != 0 && repetition(theGame, theGame->boardString[theGame->movesNumber]))
+        {
+            system("clear"); 
+            printf("=======================================================\n");
+            displayBoard(theGame);
+            printf("=======================================================\n");
+            printf("Draw by Repetition\n");
+            usleep(2000000); // test //////////////////////////////////////////////////////////////////
+            getchar( );
+            free(move);
+            break;
+        }   
+
+        if (insufficientMaterial(theGame))
+        {
+            system("clear"); 
+            printf("=======================================================\n");
+            displayBoard(theGame);
+            printf("=======================================================\n");
+            printf("Draw by Insufficient Material\n");
+            usleep(2000000); // test //////////////////////////////////////////////////////////////////
+            getchar( );
+            free(move);
+            break;
+        }
+
+        if (theGame->movesNumber > 399)
+        {
+            printf("Draw\n");
+            getchar( );
+            free(move);
+            break;
         }
         
         /////////////////////////////////////////////////////////

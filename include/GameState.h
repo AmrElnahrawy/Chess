@@ -11,6 +11,7 @@ typedef struct
     piece *allWhite[16]; // r n b q k b n r p ...
     piece *allBlack[16];
     int moves[400][5];   // from from to to (promotion/flag) -> 1 for en passant, 2 for left castling, 3 for right castling "flags are updated in checkMoveValidity"
+    char boardString[400][66];
     int movesNumber;
 } gameState;
 
@@ -38,15 +39,15 @@ int isKingInCheck(gameState *theGame, piece *king);
 
 int checkMoveValidity(int *move, gameState *theGame);
 
-void currentBoardString(gameState *theGame);
+void currentBoardString(gameState *theGame, char boardString[66]);
 
 void doMove(int *move, gameState *theGame);
 
 void undo(gameState *theGame,int moves[400][5], int movesNumber);
 
-int repetition(char* boardString, int boardStringNumber);
+int repetition(gameState *theGame, char* boardString);
 
-int insufficientPieces(gameState *theGame);
+int insufficientMaterial(gameState *theGame);
 
 int auxiliaryMove(gameState *theGame, int color, int move[5]);
 
