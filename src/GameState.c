@@ -590,6 +590,7 @@ int isKingInCheck(gameState *theGame, piece *king)
             break;
         }
     }
+    
     int mdi[8] = {1, 1, 0, -1, -1, -1, 0, 1};
     int mdj[8] = {0, 1, 1, 1, 0, -1, -1, -1};
     for (int d = 0; d < 8; d++)

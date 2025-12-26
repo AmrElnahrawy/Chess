@@ -39,17 +39,17 @@ int isKingInCheck(gameState *theGame, piece *king);
 
 int checkMoveValidity(int *move, gameState *theGame);
 
-void currentBoardString(gameState *theGame, char boardString[66]);
-
 void doMove(int *move, gameState *theGame);
 
 void undo(gameState *theGame,int moves[400][5], int movesNumber);
 
+int auxiliaryMove(gameState *theGame, int color, int move[5]);
+
+void currentBoardString(gameState *theGame, char boardString[66]);
+
 int repetition(gameState *theGame, char* boardString);
 
 int insufficientMaterial(gameState *theGame);
-
-int auxiliaryMove(gameState *theGame, int color, int move[5]);
 
 int finalCheck(gameState *theGame, piece **allWhite, piece **allBlack);
 

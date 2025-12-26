@@ -16,8 +16,11 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
 
     constructNormalBoard(theGame);
     
-    if (newOrLoad == 1)
+    if (newOrLoad == 1) {
         loadGame(theGame, fileName); 
+        allWhitePiecesMoves(theGame, theGame->allWhite);
+        allBlackPiecesMoves(theGame, theGame->allBlack);
+    }
 
     while(1) {
         system("clear"); 
@@ -34,6 +37,8 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
         }
         char *move = pieceMoveInput();
         if (!move) {
+            printf("Invalid input\n");
+            getchar();
             continue;
         } else if (move[0] == 'X') {
             freeBoard(theGame);
@@ -54,12 +59,14 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
         }
         
         if (theGame->movesNumber == 0)
-        allWhitePiecesMoves(theGame, theGame->allWhite);
+            allWhitePiecesMoves(theGame, theGame->allWhite);
         
         moveStoI(move , theGame->moves[theGame->movesNumber]);
         if (checkMoveValidity(theGame->moves[theGame->movesNumber], theGame)) {
             if ((theGame->movesNumber % 2 == 0 && auxiliaryMove(theGame, 0, theGame->moves[theGame->movesNumber])) || (theGame->movesNumber % 2 == 1 && auxiliaryMove(theGame, 1, theGame->moves[theGame->movesNumber]))) // check current player
             {
+                printf("Invalid move\n");
+                getchar();
                 free(move);
                 continue;
             }    
@@ -142,10 +149,10 @@ void startNormalGame(int newOrLoad /*0 , 1*/, char fileName[]) {
             break;
         }
 
-        /////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////
         // viewAllPiecesMoves(theGame->allWhite, theGame->allBlack);
         // getchar();
-        /////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////
  
         theGame->movesNumber++;
         free(move);

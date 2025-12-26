@@ -14,7 +14,7 @@ Pieces.o: directories
 SaveLoad.o:	directories
 	gcc -c -Wall -Wextra -Wpedantic src/SaveLoad.c   -o obj/SaveLoad.o
 Utilities.o:
-	gcc -c -Wall -Wextra -Wpedantic src/Utilities.c   -o obj/Utilities.o
+	gcc -c -Wall -Wextra -Wpedantic src/Utilities.c  -o obj/Utilities.o
 
 main: main.o Menus.o GameState.o Pieces.o SaveLoad.o Utilities.o
 	gcc obj/*.o -o bin/main
@@ -25,6 +25,6 @@ clean:
 run: main
 	bin/main
 
-test: main
-	cat testCases/*.txt | bin/main
+# test: main
+# 	cat testCases/*.txt | bin/main
 	

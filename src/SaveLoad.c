@@ -5,7 +5,6 @@
 #include "../include/GameState.h"
 #include "../include/SaveLoad.h"
 
-// Cross-platform wrapper for localtime --/ from the internet \--
 #ifdef _WIN32
     #define localtime_safe(timer, buf) (localtime_s(buf, timer) == 0 ? buf : NULL)
 #else
@@ -67,7 +66,7 @@ void loadGame(gameState *theGame ,char* fileName) {
         doMove(theGame->moves[i], theGame);
         i++;
         theGame->movesNumber = i;
-        if (i > 399)
+        if (i > 398)
             break;
     }
 

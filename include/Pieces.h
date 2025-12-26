@@ -7,7 +7,7 @@ typedef struct
 {
     char type;         // piece char
     int color;         // 0 White , 1 Black
-    int position[2];   // it's cell on the board
+    int position[2];   // its cell on the board
     int hasMoved;      // 0
     int enPassant;     // 0 Check if this piece can be captured
     int captured;      // 0
